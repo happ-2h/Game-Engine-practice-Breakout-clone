@@ -51,6 +51,45 @@ class _Renderer {
     this.#ctx.fillStyle = color;
     this.#ctx.fillText(text, x, y);
   }
+
+  /**
+   * @brief Draws a stroked rectangle (no fill)
+   *
+   * @param {Number} x      - x-position to draw the rectangle
+   * @param {Number} y      - y-position to draw the rectangle
+   * @param {Number} width  - Width of the rectangle
+   * @param {Number} height - Height of the rectangle
+   * @param {String} color  - Stroke color of the rectangle
+   */
+  rect(x=0, y=0, width=16, height=16, color="red") {
+    this.#ctx.strokeStyle = color;
+    this.#ctx.strokeRect(
+      x,
+      y,
+      width,
+      height
+    );
+  }
+
+  // Vector rendering functions
+  /**
+   * @brief Draws a stroked rectangle (no fill)\
+   *        Uses a Vec2D for the positioning
+   *
+   * @param {Vec2D} vec     - Vector to use for the position
+   * @param {Number} width  - Width of the rectangle
+   * @param {Number} height - Height of the rectangle
+   * @param {String} color  - Stroke color of the rectangle
+   */
+  vrect(vec, width=16, height=16, color="red") {
+    this.#ctx.strokeStyle = color;
+    this.#ctx.strokeRect(
+      vec.x,
+      vec.y,
+      width,
+      height
+    );
+  }
 };
 
 const Renderer = new _Renderer;
