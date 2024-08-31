@@ -1,4 +1,10 @@
 import Renderer from "../gfx/Renderer.js";
+import {
+  GAME_SCALE,
+  RES_HEIGHT,
+  RES_SCALE,
+  RES_WIDTH
+} from "./constants.js";
 
 export default class Game {
   #cnv;  // HTML5 canvas
@@ -7,8 +13,8 @@ export default class Game {
   constructor() {
     // Init canvas properties
     this.#cnv = document.querySelector("canvas");
-    this.#cnv.width  = 640;
-    this.#cnv.height = 480;
+    this.#cnv.width  = RES_WIDTH  * RES_SCALE * GAME_SCALE;
+    this.#cnv.height = RES_HEIGHT * RES_SCALE * GAME_SCALE;
     this.#cnv.autofocus = true;
 
     this.init();

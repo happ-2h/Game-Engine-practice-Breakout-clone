@@ -1,3 +1,4 @@
+import { TILE_SIZE } from "../game/constants.js";
 import Vec2D from "../math/Vec2D.js";
 
 /*
@@ -24,7 +25,7 @@ export default class Entity {
 
     this.#dst = {
       pos: new Vec2D(x, y),  // Position
-      dim: new Vec2D(16, 16) // Dimension
+      dim: new Vec2D(TILE_SIZE, TILE_SIZE) // Dimension
     };
   }
 

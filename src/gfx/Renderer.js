@@ -1,3 +1,5 @@
+import { GAME_SCALE, TILE_SIZE } from "../game/constants.js";
+
 let instance = null;
 
 class _Renderer {
@@ -61,13 +63,13 @@ class _Renderer {
    * @param {Number} height - Height of the rectangle
    * @param {String} color  - Stroke color of the rectangle
    */
-  rect(x=0, y=0, width=16, height=16, color="red") {
+  rect(x=0, y=0, width=TILE_SIZE, height=TILE_SIZE, color="red") {
     this.#ctx.strokeStyle = color;
     this.#ctx.strokeRect(
-      x,
-      y,
-      width,
-      height
+      x      * GAME_SCALE,
+      y      * GAME_SCALE,
+      width  * GAME_SCALE,
+      height * GAME_SCALE
     );
   }
 
@@ -81,13 +83,13 @@ class _Renderer {
    * @param {Number} height - Height of the rectangle
    * @param {String} color  - Stroke color of the rectangle
    */
-  vrect(vec, width=16, height=16, color="red") {
+  vrect(vec, width=TILE_SIZE, height=TILE_SIZE, color="red") {
     this.#ctx.strokeStyle = color;
     this.#ctx.strokeRect(
-      vec.x,
-      vec.y,
-      width,
-      height
+      vec.x  * GAME_SCALE,
+      vec.y  * GAME_SCALE,
+      width  * GAME_SCALE,
+      height * GAME_SCALE
     );
   }
 };
