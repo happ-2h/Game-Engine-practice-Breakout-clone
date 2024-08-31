@@ -1,0 +1,32 @@
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants.js";
+import Player from "../../entity/paddle/Player.js";
+import Ball from "../../entity/ball/Ball.js";
+import State from "./State.js";
+
+export default class GameState extends State {
+  constructor() {
+    super();
+  }
+
+  onEnter() {}
+  onExit()  {}
+
+  init() {
+    // Clear gameobjects
+    this.gameObjects.splice(0, this.gameObjects.length);
+
+    // Add objects
+    this.gameObjects.push(new Player);
+    this.gameObjects.push(
+      new Ball(SCREEN_WIDTH / 2 - 4, SCREEN_HEIGHT / 2 - 4, 8)
+    );
+  }
+
+  update(dt) {
+    this.gameObjects.forEach(go => go.update(dt));
+  }
+
+  render() {
+    this.gameObjects.forEach(go => go.draw());
+  }
+};

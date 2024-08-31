@@ -1,12 +1,13 @@
-import Player from "../entity/paddle/Player.js";
 import Renderer from "../gfx/Renderer.js";
 import AssetHandler from "../utils/AssetHandler.js";
+import StateHandler from "../utils/StateHandler.js";
 import {
   GAME_SCALE,
   RES_HEIGHT,
   RES_SCALE,
-  RES_WIDTH
+  RES_WIDTH,
 } from "./constants.js";
+import GameState from "./state/GameState.js";
 
 export default class Game {
   #cnv;  // HTML5 canvas
@@ -29,9 +30,10 @@ export default class Game {
   }
 
   init() {
-    Renderer.init(this.#cnv.getContext("2d"));
+    StateHandler.push(new GameState);
+    StateHandler.init();
 
-    this.player = new Player();
+    Renderer.init(this.#cnv.getContext("2d"));
 
     this.#last = performance.now();
     this.update(this.#last);
@@ -43,7 +45,7 @@ export default class Game {
 
     requestAnimationFrame(this.update.bind(this));
 
-    this.player.update(dt);
+    StateHandler.update(dt);
 
     this.render(dt);
   }
@@ -51,7 +53,7 @@ export default class Game {
   render(dt) {
     Renderer.clear(this.#cnv.width, this.#cnv.height);
 
-    this.player.draw();
+    StateHandler.render();
 
     Renderer.text(1/dt, 32, 32);
   }
