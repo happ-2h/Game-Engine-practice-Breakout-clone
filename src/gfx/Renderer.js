@@ -1,4 +1,5 @@
 import { GAME_SCALE, TILE_SIZE } from "../game/constants.js";
+import Vec2D from "../math/Vec2D.js";
 
 let instance = null;
 
@@ -78,18 +79,17 @@ class _Renderer {
    * @brief Draws a stroked rectangle (no fill)\
    *        Uses a Vec2D for the positioning
    *
-   * @param {Vec2D} vec     - Vector to use for the position
-   * @param {Number} width  - Width of the rectangle
-   * @param {Number} height - Height of the rectangle
+   * @param {Vec2D} pos     - Vector to use for the position
+   * @param {Vec2D} dim     - Vector to use as dimension (width, height)
    * @param {String} color  - Stroke color of the rectangle
    */
-  vrect(vec, width=TILE_SIZE, height=TILE_SIZE, color="red") {
+  vrect(vec, dim, color="red") {
     this.#ctx.strokeStyle = color;
     this.#ctx.strokeRect(
-      vec.x  * GAME_SCALE,
-      vec.y  * GAME_SCALE,
-      width  * GAME_SCALE,
-      height * GAME_SCALE
+      vec.x * GAME_SCALE,
+      vec.y * GAME_SCALE,
+      dim.x * GAME_SCALE,
+      dim.y * GAME_SCALE
     );
   }
 };
