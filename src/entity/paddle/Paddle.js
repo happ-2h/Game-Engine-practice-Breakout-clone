@@ -8,6 +8,8 @@ export default class Paddle extends Entity {
    */
   constructor(x=0, y=0) {
     super(x, y);
+
+    this.controller = null;
   }
 
   init() {}
