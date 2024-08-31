@@ -1,3 +1,4 @@
+import Player from "../entity/paddle/Player.js";
 import Renderer from "../gfx/Renderer.js";
 import {
   GAME_SCALE,
@@ -16,6 +17,8 @@ export default class Game {
     this.#cnv.width  = RES_WIDTH  * RES_SCALE * GAME_SCALE;
     this.#cnv.height = RES_HEIGHT * RES_SCALE * GAME_SCALE;
     this.#cnv.autofocus = true;
+
+    this.player = new Player();
 
     this.init();
   }
@@ -38,6 +41,8 @@ export default class Game {
 
   render(dt) {
     Renderer.clear(this.#cnv.width, this.#cnv.height);
+
+    this.player.draw();
 
     Renderer.text(1/dt, 32, 32);
   }
