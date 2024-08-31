@@ -1,3 +1,4 @@
+import { DEBUG, TILE_SIZE } from "../../game/constants.js";
 import Renderer from "../../gfx/Renderer.js";
 import Entity from "../Entity.js";
 
@@ -17,6 +18,9 @@ export default class Paddle extends Entity {
   update(dt) {}
 
   draw() {
-    Renderer.vrect(this.dst.pos, this.dst.dim);
+    if (DEBUG)
+      Renderer.vrect(this.dst.pos, this.dst.dim);
+
+    Renderer.vimage("spritesheet", this.dst, this.src);
   }
 };

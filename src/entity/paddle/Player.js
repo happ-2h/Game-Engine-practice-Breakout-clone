@@ -1,5 +1,5 @@
 import PlayerController from "../../controller/PlayerController.js";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../game/constants.js";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../../game/constants.js";
 import Paddle from "./Paddle.js";
 
 export default class Player extends Paddle {
@@ -7,6 +7,12 @@ export default class Player extends Paddle {
     super(0, 0);
 
     this.controller = new PlayerController;
+
+    // Image properties
+    this.src.pos.x = TILE_SIZE;
+    this.src.pos.y = 0;
+    this.src.dim.x = 64;
+    this.src.dim.y = 8;
 
     this.init();
   }

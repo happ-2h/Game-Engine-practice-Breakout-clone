@@ -1,5 +1,6 @@
 import { GAME_SCALE, TILE_SIZE } from "../game/constants.js";
 import Vec2D from "../math/Vec2D.js";
+import TextureHandler from "./TextureHandler.js";
 
 let instance = null;
 
@@ -77,7 +78,7 @@ class _Renderer {
   // Vector rendering functions
   /**
    * @brief Draws a stroked rectangle (no fill)\
-   *        Uses a Vec2D for the positioning
+   *        Uses Vec2D for positioning and dimension
    *
    * @param {Vec2D} pos     - Vector to use for the position
    * @param {Vec2D} dim     - Vector to use as dimension (width, height)
@@ -86,10 +87,28 @@ class _Renderer {
   vrect(vec, dim, color="red") {
     this.#ctx.strokeStyle = color;
     this.#ctx.strokeRect(
-      vec.x * GAME_SCALE,
-      vec.y * GAME_SCALE,
+      Math.floor(vec.x * GAME_SCALE),
+      Math.floor(vec.y * GAME_SCALE),
       dim.x * GAME_SCALE,
       dim.y * GAME_SCALE
+    );
+  }
+
+  /**
+   * @brief Draws an image to the canvas
+   *
+   * @param {String} textureID - ID of texture
+   * @param {Vec2D} dst        - Destination vector (HTML5 canvas)
+   * @param {Vec2D} src        - Source vector (blit of image file)
+   */
+  vimage(textureID, dst, src) {
+    this.#ctx.drawImage(
+      TextureHandler.getTexture(textureID),
+      src.pos.x, src.pos.y, src.dim.x, src.dim.y,
+      Math.floor(dst.pos.x * GAME_SCALE),
+      Math.floor(dst.pos.y * GAME_SCALE),
+      dst.dim.x * GAME_SCALE,
+      dst.dim.y * GAME_SCALE
     );
   }
 };

@@ -5,7 +5,8 @@ import Vec2D from "../math/Vec2D.js";
  * NOTE: class is engineered to mimic an abstract class
  */
 export default class Entity {
-  #dst;   // Rectangle for drawing onto the canvas
+  #dst; // Rectangle for drawing onto the canvas
+  #src; // Blit image source
 
   // Physics
   #dir;      // directional vector
@@ -34,6 +35,11 @@ export default class Entity {
       dim: new Vec2D(TILE_SIZE, TILE_SIZE) // Dimension
     };
 
+    this.#src = {
+      pos: Vec2D.zero(), // Position in sprite sheet
+      dim: new Vec2D(TILE_SIZE, TILE_SIZE) // Width and height of desired image
+    };
+
     this.#dir      = Vec2D.zero();
     this.#accel    = Vec2D.zero();
     this.#vel      = Vec2D.zero();
@@ -42,6 +48,7 @@ export default class Entity {
 
   // Accessors
   get dst()      { return this.#dst; }
+  get src()      { return this.#src; }
 
   get dir()      { return this.#dir; }
   get accel()    { return this.#accel; }

@@ -1,5 +1,6 @@
 import Player from "../entity/paddle/Player.js";
 import Renderer from "../gfx/Renderer.js";
+import AssetHandler from "../utils/AssetHandler.js";
 import {
   GAME_SCALE,
   RES_HEIGHT,
@@ -18,13 +19,19 @@ export default class Game {
     this.#cnv.height = RES_HEIGHT * RES_SCALE * GAME_SCALE;
     this.#cnv.autofocus = true;
 
-    this.player = new Player();
+    // Poll assets
+    AssetHandler.poll("spritesheet", "spritesheet.png");
 
-    this.init();
+    // If assets successfully loaded, start game loop
+    AssetHandler.load()
+      .then(val  => this.init())
+      .catch(err => console.error(err))
   }
 
   init() {
     Renderer.init(this.#cnv.getContext("2d"));
+
+    this.player = new Player();
 
     this.#last = performance.now();
     this.update(this.#last);
