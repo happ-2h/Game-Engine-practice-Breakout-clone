@@ -30,7 +30,12 @@ export default class GameState extends State {
   }
 
   update(dt) {
-    this.gameObjects.forEach(go => go.update(dt));
+    this.gameObjects.forEach(go => {
+      if (go instanceof Ball)
+        go.update(this.gameObjects, dt);
+      else
+        go.update(dt);
+    });
   }
 
   render() {

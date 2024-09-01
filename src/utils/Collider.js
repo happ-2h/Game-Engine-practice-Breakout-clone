@@ -8,10 +8,27 @@ class _Collider {
   }
 
   /**
+   * @brief Performs AABB calculation on two rectangle objects
+   *
+   * @param {Object} rect1 - dst object of the first rectangle
+   * @param {Object} rect2 - dst object of the second rectangle
+   *
+   * @returns true if the rectangles intersect; false otherwise
+   */
+  rectRect(rect1, rect2) {
+    return !(
+      rect2.pos.x > rect1.pos.x + rect1.dim.x ||
+      rect2.pos.x + rect2.dim.x < rect1.pos.x ||
+      rect2.pos.y > rect1.pos.y + rect1.dim.y ||
+      rect2.pos.y + rect2.dim.y < rect1.pos.y
+    );
+  }
+
+  /**
    * @brief Circle-rectangle collision detection
    *
-   * @param {Vec2D} cVec - Circle's positional vector
-   * @param {Vec2D} rVec - Rectangle's posiional vector
+   * @param {Object} cVec - Circle's positional vector
+   * @param {Object} rVec - Rectangle's positional vector
    * @param {Number} rad - Radius of the circle
    *
    * @returns true if collision occured; false otherwise

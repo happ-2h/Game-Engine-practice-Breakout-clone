@@ -2,6 +2,8 @@ import { DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from '../../game/consta
 import Entity from '../Entity.js';
 import Renderer from '../../gfx/Renderer.js';
 import AudioHandler from '../../audio/AudioHandler.js';
+import Paddle from '../paddle/Paddle.js';
+import Collider from '../../utils/Collider.js';
 
 export default class Ball extends Entity {
   #radius; // Used for collisions
@@ -32,11 +34,12 @@ export default class Ball extends Entity {
     this.vel.y = 100;
     this.dir.x = -1;
     this.dir.y = -1;
+    this.collisionThreshold = 4; // Prevents glitchy side collisions
   }
 
   init() {}
 
-  update(dt) {
+  update(gameobjects, dt) {
     this.dir.normalize();
 
     let nextx = this.dst.pos.x + this.vel.x * this.dir.x * dt;
@@ -64,6 +67,24 @@ export default class Ball extends Entity {
       this.dir.x = -this.dir.x;
       AudioHandler.play("hit");
     }
+
+    // Collision detection
+    gameobjects.forEach(go => {
+      if (go !== this) {
+        // Ball->paddle
+        if (go instanceof Paddle) {
+         if (this.dst.pos.y + this.dst.dim.y >= go.dst.pos.y + this.collisionThreshold);
+         else if (Collider.rectRect(this.dst, go.dst)) {
+          // Respond only when moving downwards
+          if (this.dir.y >= 0.2) {
+            nexty = go.dst.pos.y - this.dst.dim.y;
+            this.dir.y = -this.dir.y;
+          }
+         }
+
+        }
+      }
+    });
 
     // Finalize position
     this.dst.pos.x = nextx;
