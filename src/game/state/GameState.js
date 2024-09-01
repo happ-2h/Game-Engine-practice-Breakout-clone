@@ -2,6 +2,7 @@ import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants.js";
 import Player from "../../entity/paddle/Player.js";
 import Ball from "../../entity/ball/Ball.js";
 import State from "./State.js";
+import AudioHandler from "../../audio/AudioHandler.js";
 
 export default class GameState extends State {
   constructor() {
@@ -20,6 +21,12 @@ export default class GameState extends State {
     this.gameObjects.push(
       new Ball(SCREEN_WIDTH / 2 - 4, SCREEN_HEIGHT / 2 - 4, 8)
     );
+
+    // Relevant asset properties
+    AudioHandler.setVolume("hit", 0.4);
+    AudioHandler.setPlaybackRate("music01", 1.2);
+
+    AudioHandler.playMusic("music01");
   }
 
   update(dt) {

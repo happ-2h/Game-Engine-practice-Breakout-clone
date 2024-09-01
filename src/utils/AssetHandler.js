@@ -1,9 +1,11 @@
+import AudioHandler from "../audio/AudioHandler.js";
 import TextureHandler from "../gfx/TextureHandler.js";
 
 let instance = null;
 
 class _AssetHandler {
   #imgs;   // Image pool
+  #snds;   // Sound pool
 
   #loaded; // Holds number of assets loaded
   #toLoad; // Holds total number of assets to load
@@ -12,6 +14,7 @@ class _AssetHandler {
     if (instance) throw new Error("AssetHandler singleton reconstructed");
 
     this.#imgs = new Map();
+    this.#snds = new Map();
 
     this.#loaded = 0;
     this.#toLoad = 0;
@@ -32,6 +35,8 @@ class _AssetHandler {
 
     if (ext === "png")
       this.#imgs.set(assetID, filename);
+    else if (ext === "wav" || ext === "ogg")
+      this.#snds.set(assetID, filename);
     else --this.#toLoad;
   }
 
@@ -43,7 +48,13 @@ class _AssetHandler {
     return new Promise((res, rej) => {
       this.#imgs.forEach((val, key) => {
         TextureHandler.load(key, val)
-          .then(val => this.#loadHandler(res))
+          .then(val  => this.#loadHandler(res))
+          .catch(err => rej(err));
+      });
+
+      this.#snds.forEach((val, key) => {
+        AudioHandler.load(key, val)
+          .then(val  => this.#loadHandler(res))
           .catch(err => rej(err));
       });
     });

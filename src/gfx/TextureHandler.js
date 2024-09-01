@@ -16,7 +16,6 @@ class _TextureHandler {
    *
    * @param {String} textureID - ID to assign to the texture
    * @param {String} filename  - Name of the texture file
-   * @returns
    */
   load(textureID, filename) {
     return new Promise((res, rej) => {

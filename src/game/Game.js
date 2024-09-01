@@ -1,3 +1,4 @@
+import AudioHandler from "../audio/AudioHandler.js";
 import Renderer from "../gfx/Renderer.js";
 import AssetHandler from "../utils/AssetHandler.js";
 import StateHandler from "../utils/StateHandler.js";
@@ -21,7 +22,13 @@ export default class Game {
     this.#cnv.autofocus = true;
 
     // Poll assets
+    // - Images
     AssetHandler.poll("spritesheet", "spritesheet.png");
+    // - Sounds
+    // -- SFX
+    AssetHandler.poll("hit", "hit.wav");
+    // -- Music
+    AssetHandler.poll("music01", "music01.ogg");
 
     // If assets successfully loaded, start game loop
     AssetHandler.load()
