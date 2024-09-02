@@ -4,6 +4,7 @@ import Renderer from '../../gfx/Renderer.js';
 import AudioHandler from '../../audio/AudioHandler.js';
 import Paddle from '../paddle/Paddle.js';
 import Collider from '../../utils/Collider.js';
+import Brick from '../brick/Brick.js';
 
 export default class Ball extends Entity {
   #radius; // Used for collisions
@@ -30,8 +31,8 @@ export default class Ball extends Entity {
     this.src.dim.y = diameter;
 
     // Physics
-    this.vel.x = 100;
-    this.vel.y = 100;
+    this.vel.x = 170;
+    this.vel.y = 140;
     this.dir.x = -1;
     this.dir.y = -1;
     this.collisionThreshold = 4; // Prevents glitchy side collisions
@@ -70,9 +71,10 @@ export default class Ball extends Entity {
 
     // Collision detection
     gameobjects.forEach(go => {
-      if (go !== this) {
+      if (go !== this && !go.isDead) {
         // Ball->paddle
         if (go instanceof Paddle) {
+          // Prevent side collision glitches
          if (this.dst.pos.y + this.dst.dim.y >= go.dst.pos.y + this.collisionThreshold);
          else if (Collider.rectRect(this.dst, go.dst)) {
           // Respond only when moving downwards
@@ -82,7 +84,15 @@ export default class Ball extends Entity {
             this.dir.y = -this.dir.y;
           }
          }
+        }
+        else if (go instanceof Brick) {
+          if (Collider.rectRect(this.dst, go.dst)) {
+            if (go.type !== 0) {
+              go.hurt(1);
 
+              if (go.hp <= 0) go.kill();
+            }
+          }
         }
       }
     });

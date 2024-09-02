@@ -1,8 +1,8 @@
-import AudioHandler from "../audio/AudioHandler.js";
 import Renderer from "../gfx/Renderer.js";
 import AssetHandler from "../utils/AssetHandler.js";
 import StateHandler from "../utils/StateHandler.js";
 import {
+  DEBUG,
   GAME_SCALE,
   RES_HEIGHT,
   RES_SCALE,
@@ -62,6 +62,7 @@ export default class Game {
 
     StateHandler.render();
 
-    Renderer.text(1/dt, 32, 32);
+    if (DEBUG)
+      Renderer.text(1/dt, 32, 32);
   }
 };

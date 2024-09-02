@@ -8,6 +8,8 @@ export default class Entity {
   #dst; // Rectangle for drawing onto the canvas
   #src; // Blit image source
 
+  #isDead;   // Determines if entity will be processed
+
   // Physics
   #dir;      // directional vector
   #accel;    // acceleration vector
@@ -40,15 +42,27 @@ export default class Entity {
       dim: new Vec2D(TILE_SIZE, TILE_SIZE) // Width and height of desired image
     };
 
+    this.#isDead = false;
+
     this.#dir      = Vec2D.zero();
     this.#accel    = Vec2D.zero();
     this.#vel      = Vec2D.zero();
     this.#friction = Vec2D.zero();
   }
 
+  /**
+   * @brief Sets the isDead property to true,
+   *        which prevents processing of the entity
+   */
+  kill() {
+    this.#isDead = true;
+  }
+
   // Accessors
   get dst()      { return this.#dst; }
   get src()      { return this.#src; }
+
+  get isDead()   { return this.#isDead; }
 
   get dir()      { return this.#dir; }
   get accel()    { return this.#accel; }
