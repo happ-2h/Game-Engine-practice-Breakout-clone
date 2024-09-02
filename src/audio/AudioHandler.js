@@ -1,197 +1,166 @@
+import Sound from "./Sound.js";
+
 let instance = null;
 
 class _AudioHandler {
+  #ctx;
+
   #sounds;
+  #trackSources; // Used for stopping audio
 
   constructor() {
     if (instance) throw new Error("AudioHandler singleton reconstructed");
 
+    this.#ctx = new AudioContext();
+
     this.#sounds = [];
+    this.#trackSources = [];
 
     instance = this;
   }
 
   /**
-   * @brief Load a sound
+   * @brief Loads a sound
    *
    * @param {String} audioID  - ID to assign to the sound
    * @param {String} filename - Name of the sound file
    */
   load(audioID, filename) {
     return new Promise((res, rej) => {
-      // Reassign the audioID if it already exists
-      if (this.#sounds[audioID]) this.#sounds[audioID] = null;
-
-      this.#sounds[audioID] = new Audio();
-      this.#sounds[audioID].onloadstart = () => res(`${filename} loaded`);
-      this.#sounds[audioID].onerror = () => rej(`Failed to load ${filename}`);
-      this.#sounds[audioID].src = `res/snd/${filename}`;
-
-      this.#sounds[audioID].volume = 1;
-      this.#sounds[audioID].preservesPitch = false;
+      this.#loadFile(filename).then(track => {
+        this.#sounds[audioID] = new Sound(track);
+        res(`${filename} loaded`);
+      }).catch(err => rej(err));
     });
   }
 
-  // Basic audio controls
+  /**
+   * @brief Converts a sound file to a buffer usable by the AudioContext API
+   *
+   * @param {String} filename - Name of the sound file
+   *
+   * @returns Converted audio buffer
+   */
+  async #getBuffer(filename) {
+    const res         = await fetch(`res/snd/${filename}`);
+    const arrayBuffer = await res.arrayBuffer();
+    const audioBuffer = await this.#ctx.decodeAudioData(arrayBuffer);
+
+    return audioBuffer;
+  }
+
+  /**
+   * @brief Returns the decoded sound file
+   *
+   * @param {String} filename - Name of the sound file
+   *
+   * @returns Decoded buffered sound
+   */
+  async #loadFile(filename) {
+    const track = await this.#getBuffer(filename);
+    return track;
+  }
+
   /**
    * @brief Plays a sound
    *
-   * @param {String} audioID - ID of audio file to play
+   * @param {String} audioID - ID of the audio file to play
+   * @param {Boolean} loop   - true: loop audio\
+   *                           false: don't loop audio
    */
-  play(audioID) {
-    this.stop(audioID);
-    this.#sounds[audioID].play();
+  play(audioID, loop=false) {
+    if (!this.#sounds[audioID]) return;
+
+    if (this.#ctx.state === "suspended") this.#ctx.resume();
+
+    // Set up volume
+    const gainNode = this.#ctx.createGain();
+    gainNode.gain.value = this.#sounds[audioID].volume;
+    gainNode.connect(this.#ctx.destination);
+
+    // Set up the buffer source
+    const trackSource = this.#ctx.createBufferSource();
+    trackSource.buffer = this.#sounds[audioID].buffer;
+    trackSource.loop = loop;
+    trackSource.playbackRate.value = this.#sounds[audioID].playbackRate;
+    trackSource.connect(gainNode);
+
+    // Save the reference for stopping the sound
+    this.#trackSources[audioID] = trackSource;
+
+    trackSource.start();
   }
 
   /**
    * @brief Plays a looped sound
    *
-   * @param {String} audioID - ID of audio file to play
+   * @param {String} audioID - ID of the audio file to play
    */
   playMusic(audioID) {
-    if (!this.#sounds[audioID].loop)
-      this.#sounds[audioID].loop = true;
+    if (!this.#sounds[audioID]) return;
 
-    this.play(audioID);
+    if (this.#ctx.state === "suspended") this.#ctx.resume();
+    this.play(audioID, true);
   }
 
   /**
-   * @brief Pauses a sound
+   * @brief Stops a currently running sound
    *
-   * @param {String} audioID - ID of audio file to pause
-   */
-  pause(audioID) {
-    this.#sounds[audioID].pause();
-  }
-
-  /**
-   * @brief Resumes a paused sound
-   *
-   * @param {String} audioID - ID of audio file to resume
-   */
-  resume(audioID) {
-    this.#sounds[audioID].play();
-  }
-
-  /**
-   * @brief Stops a sound
-   *
-   * @param {String} audioID - ID of audio file to stop
+   * @param {String} audioID - ID of the audio file to stop
    */
   stop(audioID) {
-    this.#sounds[audioID].pause();
-    this.#sounds[audioID].currentTime = 0;
+    this.#trackSources[audioID].stop();
   }
 
   /**
-   * @brief Sets the gain level of a sound
+   * @brief Sets the volume of the given sound
    *
-   * @param {String} audioID - ID of the audio file
-   * @param {Number} volume  - Gain level of audio. 0 to 1 inclusive
+   * @param {String} audioID - ID of the audio file to set the volume
+   * @param {Number} value   - Positive value to set as the volume
+   *
+   * @returns null if the audioID is invalid
    */
-  setVolume(audioID, volume) {
-    this.#sounds[audioID].volume = volume;
+  setVolume(audioID, value) {
+    if (!this.#sounds[audioID]) return null;
+    this.#sounds[audioID].volume = value;
   }
 
   /**
-   * @brief Get the gain level of a sound
+   * @brief Gets the volume of the given sound
    *
-   * @param {String} audioID - ID of the audio file
+   * @param {String} audioID - ID of the audio file to get the volume from
    *
-   * @returns Gain level of the sound
+   * @returns null if the audioID is invalid
    */
   getVolume(audioID) {
+    if (!this.#sounds[audioID]) return null;
     return this.#sounds[audioID].volume;
   }
 
   /**
-   * @brief Sets the speed of a sound
+   * @brief Sets the playback rate of the given sound
    *
-   * @param {String} audioID - ID of the audio file
-   * @param {*} rate - Rate at which to play the sound\
-   *                   rate < 1.0: slow\
-   *                   rate = 1.0: normal\
-   *                   rate > 1.0: fast
+   * @param {String} audioID - ID of the audio file to set the playback rate
+   * @param {Number} rate    - Positive value to set as the playback rate
+   *
+   * @returns null if the audioID is invalid
    */
   setPlaybackRate(audioID, rate) {
+    if (!this.#sounds[audioID]) return null;
     this.#sounds[audioID].playbackRate = rate;
   }
 
   /**
-   * @brief Get the playback rate of the sound
+   * @brief Gets the playback rate of the given sound
    *
-   * @param {String} audioID - ID of the audio file
+   * @param {String} audioID - ID of the audio file to get the
+   *                           playback rate from
    *
-   * @returns Playback rate of the sound
+   * @returns null if the audioID is invalid
    */
   getPlaybackRate(audioID) {
+    if (!this.#sounds[audioID]) return null;
     return this.#sounds[audioID].playbackRate;
-  }
-
-  /**
-   * @brief Sets to preserve the pitch when the sound is sped up
-   *
-   * @param {String} audioID - ID of the audio file
-   * @param {Boolean} preserve - true: preserve pitch\
-   *                             false: don't preserve pitch
-   */
-  setPreservePitch(audioID, preserve) {
-    this.#sounds[audioID].preservesPitch = preserve;
-  }
-
-  /**
-   * @brief Gets if the sound's pitch is preserved
-   *
-   * @param {String} audioID - ID of the audio file
-   *
-   * @returns true if pitch is preserved; false otherwise
-   */
-  isPitchPreserved(audioID) {
-    return this.#sounds[audioID].preservesPitch;
-  }
-
-  /**
-   * @brief Tells if the sound is in a muted state
-   *
-   * @param {String} audioID - ID of the audio file
-   *
-   * @returns true if the sound is muted; false otherwise
-   */
-  isMuted(audioID) {
-    return this.#sounds[audioID].muted;
-  }
-
-  /**
-   * @brief Tells if the sound is in a paused state
-   *
-   * @param {String} audioID - ID of the audio file
-   *
-   * @returns true if the sound is paused; false otherwise
-   */
-  isPaused(audioID) {
-    return this.#sounds[audioID].paused;
-  }
-
-  /**
-   * @brief Tells if the sound has finished playing
-   *
-   * @param {String} audioID - ID of the audio file
-   *
-   * @returns true if the sound has finished playing; false otherwise
-   */
-  hasEnded(audioID) {
-    return this.#sounds[audioID].ended;
-  }
-
-  /**
-   * @brief Tells if the sound is looping
-   *
-   * @param {String} audioID - ID of the audio file
-   *
-   * @returns true if the sound is set to loop; false otherwise
-   */
-  isLooping(audioID) {
-    return this.#sounds[audioID].loop;
   }
 };
 

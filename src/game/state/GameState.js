@@ -24,7 +24,8 @@ export default class GameState extends State {
 
     // Relevant asset properties
     AudioHandler.setVolume("hit", 0.4);
-    AudioHandler.setPlaybackRate("music01", 1.2);
+    AudioHandler.setPlaybackRate("music01", 0.7);
+    AudioHandler.setVolume("music01", 0.2);
 
     AudioHandler.playMusic("music01");
   }

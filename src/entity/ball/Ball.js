@@ -77,6 +77,7 @@ export default class Ball extends Entity {
          else if (Collider.rectRect(this.dst, go.dst)) {
           // Respond only when moving downwards
           if (this.dir.y >= 0.2) {
+            AudioHandler.play("hit");
             nexty = go.dst.pos.y - this.dst.dim.y;
             this.dir.y = -this.dir.y;
           }
