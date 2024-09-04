@@ -7,8 +7,9 @@ import Collider from '../../utils/Collider.js';
 import Brick from '../brick/Brick.js';
 
 export default class Ball extends Entity {
-  #radius; // Used for collisions
   #diameter;
+
+  #hitPoints; // Damage dealt to bricks
 
   /**
    * @param {Number} x        - x-position of the ball
@@ -19,7 +20,7 @@ export default class Ball extends Entity {
     super(x, y);
 
     this.#diameter = diameter;
-    this.#radius = diameter>>1;
+    this.#hitPoints = 1;
 
     this.dst.dim.x = diameter;
     this.dst.dim.y = diameter;
@@ -41,6 +42,8 @@ export default class Ball extends Entity {
   init() {}
 
   update(gameobjects, dt) {
+    let playHitSound = false;
+
     this.dir.normalize();
 
     let nextx = this.dst.pos.x + this.vel.x * this.dir.x * dt;
@@ -50,23 +53,23 @@ export default class Ball extends Entity {
     if (nexty <= 0) {
       nexty = 0;
       this.dir.y = -this.dir.y;
-      AudioHandler.play("hit");
+      playHitSound = true;
     }
     else if (nexty + this.#diameter >= SCREEN_HEIGHT) {
       nexty = SCREEN_HEIGHT - this.#diameter;
       this.dir.y = -this.dir.y;
-      AudioHandler.play("hit");
+      playHitSound = true;
     }
 
     if (nextx <= 0) {
       nextx = 0;
       this.dir.x = -this.dir.x;
-      AudioHandler.play("hit");
+      playHitSound = true;
     }
     else if (nextx + this.#diameter >= SCREEN_WIDTH) {
       nextx = SCREEN_WIDTH - this.#diameter;
       this.dir.x = -this.dir.x;
-      AudioHandler.play("hit");
+      playHitSound = true;
     }
 
     // Collision detection
@@ -78,20 +81,51 @@ export default class Ball extends Entity {
          if (this.dst.pos.y + this.dst.dim.y >= go.dst.pos.y + this.collisionThreshold);
          else if (Collider.rectRect(this.dst, go.dst)) {
           // Respond only when moving downwards
-          if (this.dir.y >= 0.2) {
-            AudioHandler.play("hit");
+          if (this.dir.y > 0) {
             nexty = go.dst.pos.y - this.dst.dim.y;
             this.dir.y = -this.dir.y;
+            playHitSound = true;
           }
          }
         }
         else if (go instanceof Brick) {
           if (Collider.rectRect(this.dst, go.dst)) {
-            if (go.type !== 0) {
-              go.hurt(1);
-
-              if (go.hp <= 0) go.kill();
+            // Hit top of brick
+            if (
+              this.dir.y > 0 &&
+              Math.abs((nexty + this.dst.dim.y) - go.dst.pos.y) < this.collisionThreshold) {
+              nexty = go.dst.pos.y - this.dst.dim.y;
+              this.dir.y = -this.dir.y;
+              playHitSound = true;
             }
+            // Hit bottom of brick
+            if (
+              this.dir.y < 0 &&
+              Math.abs(nexty - (go.dst.pos.y + go.dst.dim.y)) < this.collisionThreshold) {
+              nexty = go.dst.pos.y + go.dst.dim.y;
+              this.dir.y = -this.dir.y;
+              playHitSound = true;
+            }
+
+            // Hit left of brick
+            if (
+              this.dir.x > 0 &&
+              Math.abs((nextx + this.dst.dim.x) - go.dst.pos.x) < this.collisionThreshold) {
+              nextx = go.dst.pos.x - this.dst.dim.x;
+              this.dir.x = -this.dir.x;
+              playHitSound = true;
+            }
+            // Hit right of brick
+            if (
+              this.dir.x < 0 &&
+              Math.abs(nextx - (go.dst.pos.x + go.dst.dim.x)) < this.collisionThreshold) {
+              nextx = go.dst.pos.x + go.dst.dim.x;
+              this.dir.x = -this.dir.x;
+              playHitSound = true;
+            }
+
+            go.hurt(this.#hitPoints);
+            if (go.hp <= 0) go.kill();
           }
         }
       }
@@ -100,6 +134,9 @@ export default class Ball extends Entity {
     // Finalize position
     this.dst.pos.x = nextx;
     this.dst.pos.y = nexty;
+
+    // Play sounds
+    if (playHitSound) AudioHandler.play("hit");
   }
 
   draw() {
@@ -108,4 +145,10 @@ export default class Ball extends Entity {
 
     Renderer.vimage("spritesheet", this.dst, this.src);
   }
+
+  // Mutators
+  set hitPoints(hitPoints) { this.#hitPoints = hitPoints; }
+
+  // Accessors
+  get hitPoints() { return this.#hitPoints; }
 };

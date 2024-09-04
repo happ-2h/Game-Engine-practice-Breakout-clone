@@ -5,6 +5,7 @@ import Vec2D from "../math/Vec2D.js";
  * NOTE: class is engineered to mimic an abstract class
  */
 export default class Entity {
+  // TODO: can be rectangle-like objects
   #dst; // Rectangle for drawing onto the canvas
   #src; // Blit image source
 
