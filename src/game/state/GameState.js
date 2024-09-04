@@ -4,6 +4,7 @@ import Ball from "../../entity/ball/Ball.js";
 import State from "./State.js";
 import AudioHandler from "../../audio/AudioHandler.js";
 import Brick_Solid from "../../entity/brick/Brick_Solid.js";
+import Brick_Basic from "../../entity/brick/Brick_Basic.js";
 
 export default class GameState extends State {
   constructor() {
@@ -26,12 +27,17 @@ export default class GameState extends State {
     // TEMP Bricks
     for (let i = 0; i < 15; ++i) {
       for (let j = 0; j < 3; ++j) {
+        const xpos = i*(16+4) + 10;
+        const ypos = j*(8+4) + 8;
         const type  = Math.random() * 4 | 0;
         let   brick = null;
 
         switch(type) {
           case 0:
-            brick = new Brick_Solid(i*(16+4) + 10, j*(8 + 4) + 8);
+            brick = new Brick_Solid(xpos, ypos);
+            break;
+          case 1:
+            brick = new Brick_Basic(xpos, ypos);
             break;
         }
 
