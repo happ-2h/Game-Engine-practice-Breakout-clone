@@ -5,6 +5,7 @@ import State from "./State.js";
 import AudioHandler from "../../audio/AudioHandler.js";
 import Brick_Solid from "../../entity/brick/Brick_Solid.js";
 import Brick_Basic from "../../entity/brick/Brick_Basic.js";
+import Brick_Multihit from "../../entity/brick/Brick_Multihit.js";
 
 export default class GameState extends State {
   constructor() {
@@ -38,6 +39,9 @@ export default class GameState extends State {
             break;
           case 1:
             brick = new Brick_Basic(xpos, ypos);
+            break;
+          case 2:
+            brick = new Brick_Multihit(xpos, ypos, 2);
             break;
         }
 

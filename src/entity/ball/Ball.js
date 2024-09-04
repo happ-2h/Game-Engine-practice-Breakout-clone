@@ -88,7 +88,10 @@ export default class Ball extends Entity {
           }
          }
         }
+        // Ball->Brick
         else if (go instanceof Brick) {
+          let hurt = false; // Prevents multiple damage from one hit
+
           if (Collider.rectRect(this.dst, go.dst)) {
             // Hit top of brick
             if (
@@ -97,6 +100,8 @@ export default class Ball extends Entity {
               nexty = go.dst.pos.y - this.dst.dim.y;
               this.dir.y = -this.dir.y;
               playHitSound = true;
+              hurt = true;
+
             }
             // Hit bottom of brick
             if (
@@ -105,6 +110,7 @@ export default class Ball extends Entity {
               nexty = go.dst.pos.y + go.dst.dim.y;
               this.dir.y = -this.dir.y;
               playHitSound = true;
+              hurt = true;
             }
 
             // Hit left of brick
@@ -114,6 +120,7 @@ export default class Ball extends Entity {
               nextx = go.dst.pos.x - this.dst.dim.x;
               this.dir.x = -this.dir.x;
               playHitSound = true;
+              hurt = true;
             }
             // Hit right of brick
             if (
@@ -122,10 +129,13 @@ export default class Ball extends Entity {
               nextx = go.dst.pos.x + go.dst.dim.x;
               this.dir.x = -this.dir.x;
               playHitSound = true;
+              hurt = true;
             }
 
-            go.hurt(this.#hitPoints);
-            if (go.hp <= 0) go.kill();
+            if (hurt) {
+              go.hurt(this.#hitPoints);
+              if (go.hp <= 0) go.kill();
+            }
           }
         }
       }
