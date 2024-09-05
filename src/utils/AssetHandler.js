@@ -1,4 +1,4 @@
-import AudioHandler from "../audio/AudioHandler.js";
+import AudioHandler   from "../audio/AudioHandler.js";
 import TextureHandler from "../gfx/TextureHandler.js";
 
 let instance = null;

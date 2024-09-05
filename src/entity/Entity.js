@@ -1,5 +1,5 @@
+import Vec2D         from "../math/Vec2D.js";
 import { TILE_SIZE } from "../game/constants.js";
-import Vec2D from "../math/Vec2D.js";
 
 /*
  * NOTE: class is engineered to mimic an abstract class

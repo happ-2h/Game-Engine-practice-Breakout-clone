@@ -1,4 +1,4 @@
-import Entity from "../Entity.js";
+import Entity   from "../Entity.js";
 import Renderer from "../../gfx/Renderer.js";
 import { DEBUG, SCREEN_HEIGHT } from "../../game/constants.js";
 

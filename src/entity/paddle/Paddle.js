@@ -1,6 +1,6 @@
-import { DEBUG, TILE_SIZE } from "../../game/constants.js";
-import Renderer from "../../gfx/Renderer.js";
-import Entity from "../Entity.js";
+import Entity    from "../Entity.js";
+import Renderer  from "../../gfx/Renderer.js";
+import { DEBUG } from "../../game/constants.js";
 
 export default class Paddle extends Entity {
   /**

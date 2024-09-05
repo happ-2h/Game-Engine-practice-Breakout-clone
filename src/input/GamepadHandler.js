@@ -1,7 +1,7 @@
 let instance = null;
 
 class _GamepadHandler {
-  #index; // FIXME Assumes only one player
+  #index; // ATTN Assumes only one player
 
   // D-Pad
   #up;

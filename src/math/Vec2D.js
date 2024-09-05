@@ -166,7 +166,7 @@ export default class Vec2D {
    *
    * @param {Vec2D} vec - Vector to get the angle from
    *
-   * @returns Angle
+   * @returns Angle in radians
    */
   static vecToAng(vec) {
     // Divide by zero custom case
@@ -303,7 +303,7 @@ export default class Vec2D {
   /**
    * @brief Calculates the magnitude of the vector
    *
-   * @returns - Magnitude of the vector
+   * @returns Magnitude of the vector
    */
   magnitude() {
     return this.length;

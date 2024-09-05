@@ -1,6 +1,6 @@
+import Controller     from "./Controller.js";
 import GamepadHandler from "../input/GamepadHandler.js";
-import KeyHandler from "../input/KeyHandler.js";
-import Controller from "./Controller.js";
+import KeyHandler     from "../input/KeyHandler.js";
 
 export default class PlayerController extends Controller {
   constructor() { super(); }

@@ -1,10 +1,16 @@
-import { DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from '../../game/constants.js';
-import Entity from '../Entity.js';
-import Renderer from '../../gfx/Renderer.js';
+import Entity       from '../Entity.js';
+import Renderer     from '../../gfx/Renderer.js';
 import AudioHandler from '../../audio/AudioHandler.js';
-import Paddle from '../paddle/Paddle.js';
-import Collider from '../../utils/Collider.js';
-import Brick from '../brick/Brick.js';
+import Paddle       from '../paddle/Paddle.js';
+import Collider     from '../../utils/Collider.js';
+import Brick        from '../brick/Brick.js';
+
+import {
+  DEBUG,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TILE_SIZE
+} from '../../game/constants.js';
 
 export default class Ball extends Entity {
   #diameter;
@@ -42,8 +48,17 @@ export default class Ball extends Entity {
   init() {}
 
   update(gameobjects, dt) {
-    let playHitSound = false;
+    this.#handleMovement(gameobjects, dt);
+  }
 
+  draw() {
+    if (DEBUG) Renderer.vrect(this.dst.pos, this.dst.dim);
+
+    Renderer.vimage("spritesheet", this.dst, this.src);
+  }
+
+  #handleMovement(gameobjects, dt) {
+    let playHitSound = false;
     this.dir.normalize();
 
     let nextx = this.dst.pos.x + this.vel.x * this.dir.x * dt;
@@ -96,7 +111,8 @@ export default class Ball extends Entity {
             // Hit top of brick
             if (
               this.dir.y > 0 &&
-              Math.abs((nexty + this.dst.dim.y) - go.dst.pos.y) < this.collisionThreshold) {
+              Math.abs((nexty + this.dst.dim.y) - go.dst.pos.y) < this.collisionThreshold
+            ) {
               nexty = go.dst.pos.y - this.dst.dim.y;
               this.dir.y = -this.dir.y;
               playHitSound = true;
@@ -106,7 +122,8 @@ export default class Ball extends Entity {
             // Hit bottom of brick
             if (
               this.dir.y < 0 &&
-              Math.abs(nexty - (go.dst.pos.y + go.dst.dim.y)) < this.collisionThreshold) {
+              Math.abs(nexty - (go.dst.pos.y + go.dst.dim.y)) < this.collisionThreshold
+            ) {
               nexty = go.dst.pos.y + go.dst.dim.y;
               this.dir.y = -this.dir.y;
               playHitSound = true;
@@ -116,7 +133,8 @@ export default class Ball extends Entity {
             // Hit left of brick
             if (
               this.dir.x > 0 &&
-              Math.abs((nextx + this.dst.dim.x) - go.dst.pos.x) < this.collisionThreshold) {
+              Math.abs((nextx + this.dst.dim.x) - go.dst.pos.x) < this.collisionThreshold
+            ) {
               nextx = go.dst.pos.x - this.dst.dim.x;
               this.dir.x = -this.dir.x;
               playHitSound = true;
@@ -125,7 +143,8 @@ export default class Ball extends Entity {
             // Hit right of brick
             if (
               this.dir.x < 0 &&
-              Math.abs(nextx - (go.dst.pos.x + go.dst.dim.x)) < this.collisionThreshold) {
+              Math.abs(nextx - (go.dst.pos.x + go.dst.dim.x)) < this.collisionThreshold
+            ) {
               nextx = go.dst.pos.x + go.dst.dim.x;
               this.dir.x = -this.dir.x;
               playHitSound = true;
@@ -141,11 +160,11 @@ export default class Ball extends Entity {
                   gameobjects.push(go.spawnPowerup());
                 }
               }
-            }
-          }
-        }
+            } // End if (hurt)
+          } // End if (Collider)
+        } // End else if (go instanceof Brick)
       }
-    });
+    }); // End collision detection
 
     // Finalize position
     this.dst.pos.x = nextx;
@@ -153,13 +172,6 @@ export default class Ball extends Entity {
 
     // Play sounds
     if (playHitSound) AudioHandler.play("hit");
-  }
-
-  draw() {
-    if (DEBUG)
-      Renderer.vrect(this.dst.pos, this.dst.dim);
-
-    Renderer.vimage("spritesheet", this.dst, this.src);
   }
 
   // Mutators

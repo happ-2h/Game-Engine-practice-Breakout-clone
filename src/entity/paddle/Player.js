@@ -1,9 +1,9 @@
+import Powerup          from "../powerup/Powerup.js";
+import Paddle           from "./Paddle.js";
+import Renderer         from "../../gfx/Renderer.js";
 import PlayerController from "../../controller/PlayerController.js";
+import Collider         from "../../utils/Collider.js";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../../game/constants.js";
-import Renderer from "../../gfx/Renderer.js";
-import Collider from "../../utils/Collider.js";
-import Powerup from "../powerup/Powerup.js";
-import Paddle from "./Paddle.js";
 
 export default class Player extends Paddle {
   #powerup; // Current powerup
@@ -48,7 +48,49 @@ export default class Player extends Paddle {
 
   update(gameobjects, dt) {
     this.#handleInput();
+    this.#handleMovement(dt);
 
+    // Paddle->Powerup collision
+    gameobjects.forEach(go => {
+      if (go instanceof Powerup && !go.isDead) {
+        if (Collider.rectRect(this.dst, go.dst)) {
+          this.#powerup.type = go.type;
+          this.#powerup.time = go.duration;
+          this.#powerup.maxTime = go.duration;
+
+          go.kill();
+        }
+      }
+    });
+  }
+
+  draw() {
+    super.draw();
+
+    // Draw powerup UI
+    if (this.#powerup.type) {
+      // Timer bar
+      Renderer.rect(0, SCREEN_HEIGHT - 8,
+        SCREEN_WIDTH * (this.#powerup.time / this.#powerup.maxTime), 8
+      );
+
+      // Icon
+      Renderer.image("spritesheet", 0, 32, 8, 8,
+        SCREEN_WIDTH - 8 - 2,
+        SCREEN_HEIGHT - 8,
+        8, 8);
+    }
+  }
+
+  #handleInput() {
+    if (this.controller.isRequestingLeft())       this.dir.x = -1;
+    else if (this.controller.isRequestingRight()) this.dir.x = 1;
+    else this.dir.x = 0;
+
+    this.dir.normalize();
+  }
+
+  #handleMovement(dt) {
     this.vel.x += this.accel.x * this.dir.x * dt;
     this.vel.x += this.vel.x * -this.friction.x * dt;
 
@@ -71,9 +113,7 @@ export default class Player extends Paddle {
     if (this.#powerup.type) {
       this.#powerup.time -= dt;
 
-      if (this.#powerup.type === "speed") {
-        this.accel.x = this.#iAccel.x<<1;
-      }
+      if (this.#powerup.type === "speed") this.accel.x = this.#iAccel.x<<1;
 
       if (this.#powerup.time <= 0) {
         this.#powerup.type = null;
@@ -83,51 +123,7 @@ export default class Player extends Paddle {
       }
     }
 
-
-    // Paddle->Powerup collision
-    gameobjects.forEach(go => {
-      if (go instanceof Powerup && !go.isDead) {
-        if (Collider.rectRect(this.dst, go.dst)) {
-          this.#powerup.type = go.type;
-          this.#powerup.time = go.duration;
-          this.#powerup.maxTime = go.duration;
-
-          go.kill();
-        }
-      }
-    });
-
     // Finalize the position
     this.dst.pos.x = nextx;
-  }
-
-  draw() {
-    super.draw();
-
-    // Draw powerup UI
-    if (this.#powerup.type) {
-      // Timer bar
-      Renderer.rect(0, SCREEN_HEIGHT - 8,
-        SCREEN_WIDTH * (this.#powerup.time / this.#powerup.maxTime), 8
-      );
-
-      // Icon
-      Renderer.image("spritesheet", 0, 32, 8, 8,
-        SCREEN_WIDTH - 8 - 2,
-        SCREEN_HEIGHT - 8,
-        8, 8);
-    }
-  }
-
-  #handleInput() {
-    if (this.controller.isRequestingLeft()) {
-      this.dir.x = -1;
-    }
-    else if (this.controller.isRequestingRight()) {
-      this.dir.x = 1;
-    }
-    else this.dir.x = 0;
-
-    this.dir.normalize();
   }
 }

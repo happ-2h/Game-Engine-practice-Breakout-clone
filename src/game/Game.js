@@ -1,7 +1,9 @@
-import Renderer from "../gfx/Renderer.js";
+import Renderer       from "../gfx/Renderer.js";
+import MainMenuState  from "./state/MainMenuState.js";
 import GamepadHandler from "../input/GamepadHandler.js";
-import AssetHandler from "../utils/AssetHandler.js";
-import StateHandler from "../utils/StateHandler.js";
+import AssetHandler   from "../utils/AssetHandler.js";
+import StateHandler   from "../utils/StateHandler.js";
+
 import {
   DEBUG,
   GAME_SCALE,
@@ -9,7 +11,6 @@ import {
   RES_SCALE,
   RES_WIDTH,
 } from "./constants.js";
-import MainMenuState from "./state/MainMenuState.js";
 
 export default class Game {
   #cnv;  // HTML5 canvas
@@ -66,7 +67,6 @@ export default class Game {
 
     StateHandler.render();
 
-    if (DEBUG)
-      Renderer.text(1/dt, 32, 32);
+    if (DEBUG) Renderer.text(1/dt, 32, 32);
   }
 };

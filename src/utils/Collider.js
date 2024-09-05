@@ -29,7 +29,7 @@ class _Collider {
    *
    * @param {Object} cVec - Circle's positional vector
    * @param {Object} rVec - Rectangle's positional vector
-   * @param {Number} rad - Radius of the circle
+   * @param {Number} rad  - Radius of the circle
    *
    * @returns true if collision occured; false otherwise
    */
@@ -37,8 +37,8 @@ class _Collider {
     const cx = Math.abs(cVec.pos.x - rVec.pos.x - rVec.dim.x / 2);
     const cy = Math.abs(cVec.pos.y - rVec.pos.y - rVec.dim.y / 2);
 
-    if (cx > rVec.dim.x / 2 + rad) return  false;
-    if (cy > rVec.dim.y / 2 + rad) return  false;
+    if (cx > rVec.dim.x / 2 + rad) return false;
+    if (cy > rVec.dim.y / 2 + rad) return false;
 
     if (cx <= rVec.dim.x / 2) return true;
     if (cy <= rVec.dim.y / 2) return true;

@@ -37,7 +37,7 @@ export const max = (val1, val2) => val1 > val2 ? val1 : val2;
  * @brief Eases a transition between two values over time
  *
  * @param {Number} curr - Current value
- * @param {Number} dst  - Final number to treach
+ * @param {Number} dst  - Final number to reach
  * @param {Number} time - Time to transition
  *
  * @returns Eased value

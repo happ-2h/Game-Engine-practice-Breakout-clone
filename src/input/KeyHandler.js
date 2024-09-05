@@ -25,6 +25,7 @@ class _KeyHandler {
   }
 
   /**
+   * @brief Check if a key is down based on its key code
    *
    * @param {Number} keycode - Keycode value
    *

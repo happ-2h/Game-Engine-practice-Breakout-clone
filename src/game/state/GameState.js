@@ -1,13 +1,14 @@
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants.js";
-import Player from "../../entity/paddle/Player.js";
-import Ball from "../../entity/ball/Ball.js";
-import State from "./State.js";
-import AudioHandler from "../../audio/AudioHandler.js";
-import Brick_Solid from "../../entity/brick/Brick_Solid.js";
-import Brick_Basic from "../../entity/brick/Brick_Basic.js";
+import Paddle         from "../../entity/paddle/Paddle.js";
+import Ball           from "../../entity/ball/Ball.js";
+import Player         from "../../entity/paddle/Player.js";
+import Brick_Basic    from "../../entity/brick/Brick_Basic.js";
 import Brick_Multihit from "../../entity/brick/Brick_Multihit.js";
-import Brick_Powerup from "../../entity/brick/Brick_Powerup.js";
-import Paddle from "../../entity/paddle/Paddle.js";
+import Brick_Powerup  from "../../entity/brick/Brick_Powerup.js";
+import Brick_Solid    from "../../entity/brick/Brick_Solid.js";
+import State          from "./State.js";
+import AudioHandler   from "../../audio/AudioHandler.js";
+
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants.js";
 
 export default class GameState extends State {
   constructor() {
@@ -75,9 +76,7 @@ export default class GameState extends State {
 
   render() {
     this.gameObjects.forEach(go => {
-      if (go.isDead) return;
-
-      go.draw();
+      if (!go.isDead) go.draw();
     });
   }
 };

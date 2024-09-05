@@ -1,7 +1,7 @@
-import Brick from "./Brick.js";
+import Brick    from "./Brick.js";
 import Renderer from "../../gfx/Renderer.js";
+import Powerup  from "../powerup/Powerup.js";
 import { DEBUG } from "../../game/constants.js";
-import Powerup from "../powerup/Powerup.js";
 
 export default class Brick_Powerup extends Brick {
   constructor(x, y) {
@@ -16,6 +16,7 @@ export default class Brick_Powerup extends Brick {
   }
 
   spawnPowerup() {
+    // Spawn at the center of the brick
     return new Powerup(
       this.dst.pos.x + (this.dst.dim.x>>1) - 4,
       this.dst.pos.y,

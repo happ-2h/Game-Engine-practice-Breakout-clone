@@ -1,6 +1,7 @@
-import { GAME_SCALE, TILE_SIZE } from "../game/constants.js";
-import Vec2D from "../math/Vec2D.js";
 import TextureHandler from "./TextureHandler.js";
+import Vec2D          from "../math/Vec2D.js";
+
+import { GAME_SCALE, TILE_SIZE } from "../game/constants.js";
 
 let instance = null;
 
@@ -102,9 +103,9 @@ class _Renderer {
    * @brief Draws a stroked rectangle (no fill)\
    *        Uses Vec2D for positioning and dimension
    *
-   * @param {Vec2D} pos     - Vector to use for the position
-   * @param {Vec2D} dim     - Vector to use as dimension (width, height)
-   * @param {String} color  - Stroke color of the rectangle
+   * @param {Vec2D} pos    - Vector to use for the position
+   * @param {Vec2D} dim    - Vector to use as dimension (width, height)
+   * @param {String} color - Stroke color of the rectangle
    */
   vrect(vec, dim, color="red") {
     this.#ctx.strokeStyle = color;

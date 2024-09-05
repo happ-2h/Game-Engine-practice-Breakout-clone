@@ -1,11 +1,11 @@
-import AudioHandler from '../../audio/AudioHandler.js';
-import Renderer from '../../gfx/Renderer.js';
+import Renderer       from '../../gfx/Renderer.js';
+import State          from './State.js';
+import GameState      from './GameState.js';
+import AudioHandler   from '../../audio/AudioHandler.js';
 import GamepadHandler from '../../input/GamepadHandler.js';
-import KeyHandler from '../../input/KeyHandler.js';
-import StateHandler from '../../utils/StateHandler.js';
+import KeyHandler     from '../../input/KeyHandler.js';
+import StateHandler   from '../../utils/StateHandler.js';
 import { SCREEN_WIDTH } from '../constants.js';
-import GameState from './GameState.js';
-import State from './State.js';
 
 export default class MainMenuState extends State {
   #spacebarSx; // For animation

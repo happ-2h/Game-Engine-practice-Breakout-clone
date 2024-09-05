@@ -10,8 +10,6 @@ export default class Brick_Multihit extends Brick {
 
   update(dt) {
     // Change image at 50% health
-    if (this.hp <= this.ttlHp>>1) {
-      this.src.pos.y = 24;
-    }
+    if (this.hp <= this.ttlHp>>1) this.src.pos.y = 24;
   }
 };
