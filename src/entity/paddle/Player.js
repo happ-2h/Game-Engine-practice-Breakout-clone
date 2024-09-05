@@ -113,9 +113,9 @@ export default class Player extends Paddle {
 
       // Icon
       Renderer.image("spritesheet", 0, 32, 8, 8,
-        SCREEN_WIDTH - 14,
-        SCREEN_HEIGHT - 13,
-        32, 32);
+        SCREEN_WIDTH - 8 - 2,
+        SCREEN_HEIGHT - 8,
+        8, 8);
     }
   }
 

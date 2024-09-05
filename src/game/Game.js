@@ -8,7 +8,7 @@ import {
   RES_SCALE,
   RES_WIDTH,
 } from "./constants.js";
-import GameState from "./state/GameState.js";
+import MainMenuState from "./state/MainMenuState.js";
 
 export default class Game {
   #cnv;  // HTML5 canvas
@@ -29,6 +29,7 @@ export default class Game {
     AssetHandler.poll("hit", "hit.wav");
     // -- Music
     AssetHandler.poll("music01", "music01.ogg");
+    AssetHandler.poll("musicMainMenu", "music_MainMenu.ogg");
 
     // If assets successfully loaded, start game loop
     AssetHandler.load()
@@ -37,7 +38,7 @@ export default class Game {
   }
 
   init() {
-    StateHandler.push(new GameState);
+    StateHandler.push(new MainMenuState);
     StateHandler.init();
 
     Renderer.init(this.#cnv.getContext("2d"));

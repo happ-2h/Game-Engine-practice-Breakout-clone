@@ -14,7 +14,7 @@ export default class GameState extends State {
     super();
   }
 
-  onEnter() {}
+  onEnter() { this.init(); }
   onExit()  {}
 
   init() {

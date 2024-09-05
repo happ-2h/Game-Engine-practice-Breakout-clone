@@ -51,7 +51,7 @@ class _Renderer {
    * @param {Number} y     - Ordinate to place the text
    * @param {String} color - Color of the text
    */
-  text(text="SAMPLE", x=0, y=0, color="black") {
+  text(text="SAMPLE", x=0, y=0, color="white") {
     this.#ctx.fillStyle = color;
     this.#ctx.fillText(text, x, y);
   }
@@ -93,7 +93,7 @@ class _Renderer {
       sx, sy, sw, sh,
       Math.floor(dx * GAME_SCALE),
       Math.floor(dy * GAME_SCALE),
-      dw, dh
+      dw * GAME_SCALE, dh * GAME_SCALE
     );
   }
 
