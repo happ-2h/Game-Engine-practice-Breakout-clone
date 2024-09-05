@@ -16,7 +16,7 @@ A simple brick-breaker clone game to practice HTML5 game engine design and princ
 Only JavaScript and standard browser APIs used.
 
 > [!NOTE]
-> This is not a full-fledged game. Bugs may exist during gameplay.
+> This is not a full-fledged game; bugs may exist during gameplay.
 > Expected features may not be present, for example, pause and game over.
 
 ## Getting Started
