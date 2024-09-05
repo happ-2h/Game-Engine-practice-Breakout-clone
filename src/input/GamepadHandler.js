@@ -64,6 +64,26 @@ class _GamepadHandler {
     this.#rightStickY = gamepad.axes[3];
   }
 
+  // Utils
+  /**
+   * @brief Apply dual-rumble haptic feedback to the hardware
+   *
+   * @param {Number} intensity - Rumble intensity
+   * @param {Number} time      - Duration in milliseconds
+   */
+  vibrate(intensity, time=0) {
+    const gamepad = navigator.getGamepads()[this.#index];
+
+    // gamepad.hapticActuators[0].pulse(intensity, time);
+
+    gamepad.vibrationActuator.playEffect("dual-rumble", {
+      startDelay: 0,
+      duration: time,
+      weakMagnitude:   intensity,
+      strongMagnitude: intensity
+    });
+  }
+
   // Accessors
   isDpadUp()    { return this.#up; }
   isDpadDown()  { return this.#down; }
