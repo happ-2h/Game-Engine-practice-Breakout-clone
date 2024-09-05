@@ -1,8 +1,15 @@
 import PlayerController from "../../controller/PlayerController.js";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../../game/constants.js";
+import Renderer from "../../gfx/Renderer.js";
+import Collider from "../../utils/Collider.js";
+import Powerup from "../powerup/Powerup.js";
 import Paddle from "./Paddle.js";
 
 export default class Player extends Paddle {
+  #powerup; // Current powerup
+
+  #iAccel; // Initial acceleration for powerup restoration
+
   constructor() {
     super(0, 0);
 
@@ -13,6 +20,13 @@ export default class Player extends Paddle {
     this.src.pos.y = 0;
     this.src.dim.x = 64;
     this.src.dim.y = 8;
+
+    // Current powerup stats
+    this.#powerup = {
+      type: null,
+      time: 0,
+      maxTime: 0
+    };
 
     this.init();
   }
@@ -28,9 +42,11 @@ export default class Player extends Paddle {
     this.accel.x = 400;
     this.accel.y = 0;
     this.friction.x = 3;
+
+    this.#iAccel = this.accel.clone();
   }
 
-  update(dt) {
+  update(gameobjects, dt) {
     this.#handleInput();
 
     this.vel.x += this.accel.x * this.dir.x * dt;
@@ -51,8 +67,56 @@ export default class Player extends Paddle {
       this.dir.x = 0;
     }
 
+    // Powerup handler
+    if (this.#powerup.type) {
+      this.#powerup.time -= dt;
+
+      if (this.#powerup.type === "speed") {
+        this.accel.x = this.#iAccel.x<<1;
+      }
+
+      if (this.#powerup.time <= 0) {
+        this.#powerup.type = null;
+
+        // Reset settings
+        this.accel.x = this.#iAccel.x;
+      }
+    }
+
+
+    // Paddle->Powerup collision
+    gameobjects.forEach(go => {
+      if (go instanceof Powerup && !go.isDead) {
+        if (Collider.rectRect(this.dst, go.dst)) {
+          this.#powerup.type = go.type;
+          this.#powerup.time = go.duration;
+          this.#powerup.maxTime = go.duration;
+
+          go.kill();
+        }
+      }
+    });
+
     // Finalize the position
     this.dst.pos.x = nextx;
+  }
+
+  draw() {
+    super.draw();
+
+    // Draw powerup UI
+    if (this.#powerup.type) {
+      // Timer bar
+      Renderer.rect(0, SCREEN_HEIGHT - 8,
+        SCREEN_WIDTH * (this.#powerup.time / this.#powerup.maxTime), 8
+      );
+
+      // Icon
+      Renderer.image("spritesheet", 0, 32, 8, 8,
+        SCREEN_WIDTH - 14,
+        SCREEN_HEIGHT - 13,
+        32, 32);
+    }
   }
 
   #handleInput() {

@@ -6,6 +6,8 @@ import AudioHandler from "../../audio/AudioHandler.js";
 import Brick_Solid from "../../entity/brick/Brick_Solid.js";
 import Brick_Basic from "../../entity/brick/Brick_Basic.js";
 import Brick_Multihit from "../../entity/brick/Brick_Multihit.js";
+import Brick_Powerup from "../../entity/brick/Brick_Powerup.js";
+import Paddle from "../../entity/paddle/Paddle.js";
 
 export default class GameState extends State {
   constructor() {
@@ -43,6 +45,9 @@ export default class GameState extends State {
           case 2:
             brick = new Brick_Multihit(xpos, ypos, 2);
             break;
+          case 3:
+            brick = new Brick_Powerup(xpos, ypos);
+            break;
         }
 
         if (brick) this.gameObjects.push(brick);
@@ -61,7 +66,7 @@ export default class GameState extends State {
     this.gameObjects.forEach(go => {
       if (go.isDead) return;
 
-      if (go instanceof Ball)
+      if (go instanceof Ball || go instanceof Paddle)
         go.update(this.gameObjects, dt);
       else
         go.update(dt);

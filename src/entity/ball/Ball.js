@@ -134,7 +134,13 @@ export default class Ball extends Entity {
 
             if (hurt) {
               go.hurt(this.#hitPoints);
-              if (go.hp <= 0) go.kill();
+              if (go.hp <= 0) {
+                go.kill();
+
+                if (go.type === 3) {
+                  gameobjects.push(go.spawnPowerup());
+                }
+              }
             }
           }
         }

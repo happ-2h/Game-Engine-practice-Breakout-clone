@@ -75,6 +75,28 @@ class _Renderer {
     );
   }
 
+  /**
+   *
+   * @param {String} textureID - ID of texture
+   * @param {Number} sx - Source x (reference to the png)
+   * @param {Number} sy - Source y (reference to the png)
+   * @param {Number} sw - Source width (reference to the png)
+   * @param {Number} sh - Source height (reference to the png)
+   * @param {Number} dx - Destination x (reference to the canvas)
+   * @param {Number} dy - Destination y (reference to the canvas)
+   * @param {Number} dw - Destination width (reference to the canvas)
+   * @param {Number} dh - Destination height (reference to the canvas)
+   */
+  image(textureID, sx, sy, sw, sh, dx, dy, dw, dh) {
+    this.#ctx.drawImage(
+      TextureHandler.getTexture(textureID),
+      sx, sy, sw, sh,
+      Math.floor(dx * GAME_SCALE),
+      Math.floor(dy * GAME_SCALE),
+      dw, dh
+    );
+  }
+
   // Vector rendering functions
   /**
    * @brief Draws a stroked rectangle (no fill)\
