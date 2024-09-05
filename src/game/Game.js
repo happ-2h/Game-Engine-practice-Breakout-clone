@@ -1,4 +1,5 @@
 import Renderer from "../gfx/Renderer.js";
+import GamepadHandler from "../input/GamepadHandler.js";
 import AssetHandler from "../utils/AssetHandler.js";
 import StateHandler from "../utils/StateHandler.js";
 import {
@@ -34,7 +35,7 @@ export default class Game {
     // If assets successfully loaded, start game loop
     AssetHandler.load()
       .then(val  => this.init())
-      .catch(err => console.error(err))
+      .catch(err => console.error(err));
   }
 
   init() {
@@ -52,6 +53,8 @@ export default class Game {
     this.#last = ts;
 
     requestAnimationFrame(this.update.bind(this));
+
+    if (GamepadHandler.index !== null) GamepadHandler.update();
 
     StateHandler.update(dt);
 

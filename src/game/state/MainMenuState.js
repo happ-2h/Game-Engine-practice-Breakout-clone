@@ -1,5 +1,6 @@
 import AudioHandler from '../../audio/AudioHandler.js';
 import Renderer from '../../gfx/Renderer.js';
+import GamepadHandler from '../../input/GamepadHandler.js';
 import KeyHandler from '../../input/KeyHandler.js';
 import StateHandler from '../../utils/StateHandler.js';
 import { SCREEN_WIDTH } from '../constants.js';
@@ -8,6 +9,7 @@ import State from './State.js';
 
 export default class MainMenuState extends State {
   #spacebarSx; // For animation
+  #optionsSx;  // Gamepad
 
   #animationTimer;
   #animationTimerMax; // Timer in seconds
@@ -15,7 +17,8 @@ export default class MainMenuState extends State {
   constructor() {
     super();
 
-    this.#spacebarSx = 40;
+    this.#spacebarSx =  40;
+    this.#optionsSx  = 104;
     this.#animationTimer = 0;
     this.#animationTimerMax = 0.2;
   }
@@ -34,7 +37,7 @@ export default class MainMenuState extends State {
   update(dt) {
     this.#animationTimer += dt;
 
-    if (KeyHandler.isDown(32)) {
+    if (KeyHandler.isDown(32) || GamepadHandler.isOptions()) {
       StateHandler.pop();
       StateHandler.push(new GameState);
     }
@@ -42,6 +45,7 @@ export default class MainMenuState extends State {
     if (this.#animationTimer >= this.#animationTimerMax) {
       this.#animationTimer = 0;
       this.#spacebarSx = this.#spacebarSx === 40 ? 72 : 40;
+      this.#optionsSx = this.#optionsSx === 104 ? 112 : 104;
     }
   }
 
@@ -72,5 +76,17 @@ export default class MainMenuState extends State {
       32,
       8
     );
+
+    // Joypad Options
+    if (GamepadHandler.index !== null) {
+      // - Button
+      Renderer.image("spritesheet",
+        this.#optionsSx, 120, 8, 8,
+        (SCREEN_WIDTH>>1) - 4,
+        8 * 14,
+        8,
+        8
+      );
+    }
   }
 };
